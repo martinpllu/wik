@@ -8,7 +8,7 @@
         body,
         textarea {
             font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-            /*            font-size: 20px;*/
+            font-size: 20px;
         }
         
         textarea {
@@ -19,11 +19,7 @@
             -moz-box-shadow: none;
             box-shadow: none;
         }
-        
-        h1 {
-            font-size: 30px;
-        }
-        
+            
         .title-bar {
             margin-bottom: 20px;
         }
@@ -45,22 +41,21 @@
         <a id="back" href="javascript:history.back()">Back</a>
 
     </div>
-    <textarea id="editor" style="width:100%" rows="50" spellcheck="false">
+    <textarea id="editor" style="width:100%" rows="20" spellcheck="false">
     </textarea>
     <div class="settings">
-        <div><a href="#">Import</a>
-        </div>
-        <div><a href="#">Export</a>
+        <div><a href="#System:Export">Import/Export</a>
         </div>
         <div><a href="javascript:reset()">Reset</a>
         </div>
     </div>
     <script>
         var DATA_KEY = 'wik.data';
+        var SYSTEM_EXPORT_PAGE = 'System:Export';
         var DEFAULT_CONTENT = "Welcome to wik!\n\n" + //
-            "Go ahead and edit this page.\n" + //
-            "Changes are automatically saved.\n" + //
-            "Brackets create links, e.g. (Banana)\n" + //
+            "Go ahead and edit this page.\n\n" + //
+            "Changes are automatically saved.\n\n" + //
+            "Brackets create links, e.g. (Banana)\n\n" + //
             "Click or press return inside a link to open it.\n"
 
         var page;
@@ -70,7 +65,6 @@
         document.addEventListener("DOMContentLoaded", function (event) {
             load();
             enterPage('Home');
-
         });
 
         function load() {
@@ -83,14 +77,24 @@
         }
 
         function enterPage(pageName) {
-            page = pageName;
-            if (!pages[page]) {
-                pages[page] = "";
-            }
+            page = pageName;            
             window.location.hash = pageName;
-            editor.value = pages[page]
+            editor.value = pageText();
             document.getElementById('title').innerHTML = page;
             editor.blur();
+        }
+        
+        function pageText(){
+            if (page == SYSTEM_EXPORT_PAGE){
+                return JSON.stringify(pages, undefined, 4);
+            }
+            else {
+                var data = pages[page];
+                if (data == undefined){
+                    data = '';
+                }
+                return data;
+            }
         }
 
         window.onhashchange = function () {
@@ -99,7 +103,12 @@
         }
 
         function save() {
-            pages[page] = editor.value;
+            if (page == SYSTEM_EXPORT_PAGE){
+                pages = JSON.parse(editor.value);
+            }
+            else {
+                pages[page] = editor.value;
+            }
             localStorage.setItem(DATA_KEY, JSON.stringify(pages));
         }
 
@@ -112,7 +121,9 @@
         }
         
         function navigate(e) {
-            
+            if (page == SYSTEM_EXPORT_PAGE){
+                return;
+            }
             var linkUnderCursor = null;
             var text = editor.value;
             var cursor = editor.selectionStart;
@@ -142,7 +153,6 @@
                 e.preventDefault();
                 enterPage(linkUnderCursor);
             }
-
         }
 
 
@@ -157,6 +167,11 @@
             enterPage('Home');
             save();
         }
+        
+        function exportPages(){
+            enterPage(SYSTEM_EXPORT_PAGE);
+        }
+        
     </script>
 </body>
 <html>
