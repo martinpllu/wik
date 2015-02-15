@@ -1,0 +1,162 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Disable zoom-on-edit in certain mobile browsers -->
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, user-scalable=0" />
+    <style>
+        body,
+        textarea {
+            font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+            /*            font-size: 20px;*/
+        }
+        
+        textarea {
+            border: none;
+            overflow: auto;
+            outline: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+        }
+        
+        h1 {
+            font-size: 30px;
+        }
+        
+        .title-bar {
+            margin-bottom: 20px;
+        }
+        
+        #title {
+            font-size: 30px;
+        }
+        
+        #back {
+            float: right;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="title-bar">
+        <span id="title"></span>
+        <a id="back" href="javascript:history.back()">Back</a>
+
+    </div>
+    <textarea id="editor" style="width:100%" rows="50" spellcheck="false">
+    </textarea>
+    <div class="settings">
+        <div><a href="#">Import</a>
+        </div>
+        <div><a href="#">Export</a>
+        </div>
+        <div><a href="javascript:reset()">Reset</a>
+        </div>
+    </div>
+    <script>
+        var DATA_KEY = 'wik.data';
+        var DEFAULT_CONTENT = "Welcome to wik!\n\n" + //
+            "Go ahead and edit this page.\n" + //
+            "Changes are automatically saved.\n" + //
+            "Brackets create links, e.g. (Banana)\n" + //
+            "Click or press return inside a link to open it.\n"
+
+        var page;
+        var pages;
+        editor = document.getElementById('editor');
+
+        document.addEventListener("DOMContentLoaded", function (event) {
+            load();
+            enterPage('Home');
+
+        });
+
+        function load() {
+            var rawData = localStorage.getItem(DATA_KEY);
+            if (!rawData) {
+                setDefaultContent();
+            } else {
+                pages = JSON.parse(rawData);
+            }
+        }
+
+        function enterPage(pageName) {
+            page = pageName;
+            if (!pages[page]) {
+                pages[page] = "";
+            }
+            window.location.hash = pageName;
+            editor.value = pages[page]
+            document.getElementById('title').innerHTML = page;
+            editor.blur();
+        }
+
+        window.onhashchange = function () {
+            var pageName = window.location.hash.substring(1);
+            enterPage(pageName);
+        }
+
+        function save() {
+            pages[page] = editor.value;
+            localStorage.setItem(DATA_KEY, JSON.stringify(pages));
+        }
+
+        editor.onkeydown = navigate;
+        editor.onkeyup = edit;
+        editor.onclick = navigate;
+
+        function edit(){
+            save();
+        }
+        
+        function navigate(e) {
+            
+            var linkUnderCursor = null;
+            var text = editor.value;
+            var cursor = editor.selectionStart;
+            var linkStart, linkEnd;
+            for (var i = 0; i < text.length; i++) {
+                var c = text.charAt(i);
+                if (c == '[' || c == '(') {
+                    linkStart = i;
+                }
+                if (c == ']' || c == ')') {
+                    if (linkStart != null) {
+                        linkEnd = i;
+                    }
+                    if (linkStart < cursor && cursor <= linkEnd) {
+                        break;
+                    } else {
+                        linkStart = null;
+                        linkEnd = null;
+                    }
+                }
+            }
+            if (linkStart != null) {
+                linkUnderCursor = text.substring(linkStart + 1, linkEnd);
+            }
+            var isLinkEnter = (e.x || e.keyCode == 13);
+            if (isLinkEnter && linkUnderCursor) { // return
+                e.preventDefault();
+                enterPage(linkUnderCursor);
+            }
+
+        }
+
+
+        function setDefaultContent() {
+            pages = {
+                "Home": DEFAULT_CONTENT
+            }
+        }
+
+        function reset() {
+            setDefaultContent();
+            enterPage('Home');
+            save();
+        }
+    </script>
+</body>
+<html>
