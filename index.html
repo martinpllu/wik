@@ -1,4 +1,4 @@
-<html manifest="wik.manifest">
+<html manifest="wik.manifest1">
 
 <head>
     <meta charset="UTF-8">
@@ -22,14 +22,21 @@
             
         .title-bar {
             margin-bottom: 20px;
+            font-size: 30px;
         }
         
         #title {
-            font-size: 30px;
+            
+            color: #F00;
         }
         
         #back {
             float: right;
+            text-decoration: none;
+            background-color: #333;
+            color: #FFF;
+            width: 35px;
+            text-align: center;
         }
     </style>
 
@@ -37,9 +44,8 @@
 
 <body>
     <div class="title-bar">
+        <a id="back" href="javascript:history.back()"><</a>
         <span id="title"></span>
-        <a id="back" href="javascript:history.back()">Back</a>
-
     </div>
     <textarea id="editor" style="width:100%" rows="20" spellcheck="false">
     </textarea>
@@ -148,7 +154,7 @@
             if (linkStart != null) {
                 linkUnderCursor = text.substring(linkStart + 1, linkEnd);
             }
-            var isLinkEnter = (e.x || e.keyCode == 13);
+            var isLinkEnter = (e.type == 'click' || e.keyCode == 13);
             if (isLinkEnter && linkUnderCursor) { // return
                 e.preventDefault();
                 enterPage(linkUnderCursor);

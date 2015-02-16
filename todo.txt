@@ -1,2 +1,3 @@
+- Only show Back when applicable
 - Save pages separately
-- Import/export
+- github hosting
