@@ -30,13 +30,15 @@
             color: #F00;
         }
         
-        #back {
+        .button {
             float: right;
             text-decoration: none;
-            background-color: #333;
+            background-color: #555;
             color: #FFF;
             width: 35px;
+            height: 35px;
             text-align: center;
+            margin-left: 5px;
         }
     </style>
 
@@ -44,7 +46,8 @@
 
 <body>
     <div class="title-bar">
-        <a id="back" href="javascript:history.back()"><</a>
+        <a id="back" class="button" href="javascript:history.back()"><</a>
+            <a id="settings" class="button" href="javascript:history.back()">#</a>
         <span id="title"></span>
     </div>
     <textarea id="editor" style="width:100%" rows="20" spellcheck="false">
