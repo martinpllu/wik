@@ -52,142 +52,143 @@
     </div>
     <textarea id="editor" style="width:100%" rows="20" spellcheck="false">
     </textarea>
-    
+
     <script>
-        var DATA_KEY = 'wik.data';
-        var SYSTEM_EXPORT_PAGE = 'System:Export';
-        var SYSTEM_DELETE_ALL_PAGE = 'System:DeleteAll';
-        var SYSTEM_ACTIONS_PAGE = 'System:Actions';
-        var SYSTEM_HELP_PAGE = 'System:Help';
+        (function () {
+            var DATA_KEY = 'wik.data';
+            var SYSTEM_EXPORT_PAGE = 'System:Export';
+            var SYSTEM_DELETE_ALL_PAGE = 'System:DeleteAll';
+            var SYSTEM_ACTIONS_PAGE = 'System:Actions';
+            var SYSTEM_HELP_PAGE = 'System:Help';
 
-        var page;
-        var pages;
-        editor = document.getElementById('editor');
+            var page;
+            var pages;
+            editor = document.getElementById('editor');
 
-        document.addEventListener("DOMContentLoaded", function (event) {
-            load();
-            enterPage('Home');
-        });
-
-        function load() {
-            var rawData = localStorage.getItem(DATA_KEY);
-            if (!rawData) {
-                setDefaultContent();
-            } else {
-                pages = JSON.parse(rawData);
-            }
-        }
-
-        function enterPage(pageName) {
-            if (pageName == SYSTEM_DELETE_ALL_PAGE){
-                deleteAll();
-                return;
-            }
-            page = pageName;
-            window.location.hash = pageName;
-            editor.value = pageText();
-            document.getElementById('title').innerHTML = page;
-            editor.blur();
-        }
-
-        function pageText() {
-            if (page == SYSTEM_EXPORT_PAGE) {
-                return JSON.stringify(pages, undefined, 4);
-            } 
-            if (page == SYSTEM_ACTIONS_PAGE){
-                return '(System:Help)\n\n(System:Export)\n\n(System:DeleteAll)'
-            }
-            if (page == SYSTEM_HELP_PAGE){
-                return "Welcome to wik!\n\n" + //
-                    "Click on a page and start typing to edit text.\n\n" + //
-                    "Changes are automatically saved.\n\n" + //
-                    "Brackets create links, e.g. (Banana)\n\n" + //
-                    "Click or press return inside a link to open it.\n"
-            }   
-            else {
-                var data = pages[page];
-                if (data == undefined) {
-                    data = '';
-                }
-                return data;
-            }
-        }
-
-        window.onhashchange = function () {
-            var pageName = window.location.hash.substring(1);
-            enterPage(pageName);
-        }
-
-        function save() {
-            if (page == SYSTEM_EXPORT_PAGE) {
-                pages = JSON.parse(editor.value);
-            } else {
-                pages[page] = editor.value;
-            }
-            localStorage.setItem(DATA_KEY, JSON.stringify(pages));
-        }
-
-        editor.onkeydown = navigate;
-        editor.onkeyup = edit;
-        editor.onclick = navigate;
-
-        function edit() {
-            save();
-        }
-
-        function navigate(e) {
-            if (page == SYSTEM_EXPORT_PAGE) {
-                return;
-            }
-            var linkUnderCursor = null;
-            var text = editor.value;
-            var cursor = editor.selectionStart;
-            var linkStart, linkEnd;
-            for (var i = 0; i < text.length; i++) {
-                var c = text.charAt(i);
-                if (c == '[' || c == '(') {
-                    linkStart = i;
-                }
-                if (c == ']' || c == ')') {
-                    if (linkStart != null) {
-                        linkEnd = i;
-                    }
-                    if (linkStart < cursor && cursor <= linkEnd) {
-                        break;
-                    } else {
-                        linkStart = null;
-                        linkEnd = null;
-                    }
-                }
-            }
-            if (linkStart != null) {
-                linkUnderCursor = text.substring(linkStart + 1, linkEnd);
-            }
-            var isLinkEnter = (e.type == 'click' || e.keyCode == 13);
-            if (isLinkEnter && linkUnderCursor) { // return
-                e.preventDefault();
-                enterPage(linkUnderCursor);
-            }
-        }
-
-        function setDefaultContent() {
-            pages = {
-                'Home': 'Edit me!\n\nCreate links like this: (Banana)\n\nClick # for help.',
-            }
-        }
-
-        function deleteAll() {
-            var response = window.confirm("This will delete all of your data. Are you sure?");
-            if (response) {
-                setDefaultContent();
+            document.addEventListener("DOMContentLoaded", function (event) {
+                load();
                 enterPage('Home');
+            });
+
+            function load() {
+                var rawData = localStorage.getItem(DATA_KEY);
+                if (!rawData) {
+                    setDefaultContent();
+                } else {
+                    pages = JSON.parse(rawData);
+                }
+            }
+
+            function enterPage(pageName) {
+                if (pageName == SYSTEM_DELETE_ALL_PAGE) {
+                    deleteAll();
+                    return;
+                }
+                page = pageName;
+                window.location.hash = pageName;
+                editor.value = pageText();
+                document.getElementById('title').innerHTML = page;
+                editor.blur();
+            }
+
+            function pageText() {
+                if (page == SYSTEM_EXPORT_PAGE) {
+                    return JSON.stringify(pages, undefined, 4);
+                }
+                if (page == SYSTEM_ACTIONS_PAGE) {
+                    return '(Home)\ngo home\n\n(System:Help)\nget some help\n\n(System:Export)\ngrab or edit the content of the entire wiki\n\n(System:DeleteAll)\nnuke it all'
+                }
+                if (page == SYSTEM_HELP_PAGE) {
+                    return "Welcome to wik!\n\n" + //
+                        "Click on a page and start typing to edit text.\n\n" + //
+                        "Changes are automatically saved.\n\n" + //
+                        "Brackets create links, e.g. (Banana)\n\n" + //
+                        "Click or press return inside a link to open it.\n"
+                } else {
+                    var data = pages[page];
+                    if (data == undefined) {
+                        data = '';
+                    }
+                    return data;
+                }
+            }
+
+            window.onhashchange = function () {
+                var pageName = window.location.hash.substring(1);
+                enterPage(pageName);
+            }
+
+            function save() {
+                if (page == SYSTEM_EXPORT_PAGE) {
+                    pages = JSON.parse(editor.value);
+                } else {
+                    pages[page] = editor.value;
+                }
+                localStorage.setItem(DATA_KEY, JSON.stringify(pages));
+            }
+
+            editor.onkeydown = navigate;
+            editor.onkeyup = edit;
+            editor.onclick = navigate;
+
+            function edit() {
                 save();
             }
-        }
 
-        function exportPages() {
-            enterPage(SYSTEM_EXPORT_PAGE);
-        }
+            function navigate(e) {
+                if (page == SYSTEM_EXPORT_PAGE) {
+                    return;
+                }
+                var linkUnderCursor = null;
+                var text = editor.value;
+                var cursor = editor.selectionStart;
+                var linkStart, linkEnd;
+                for (var i = 0; i < text.length; i++) {
+                    var c = text.charAt(i);
+                    if (c == '[' || c == '(') {
+                        linkStart = i;
+                    }
+                    if (c == ']' || c == ')') {
+                        if (linkStart != null) {
+                            linkEnd = i;
+                        }
+                        if (linkStart < cursor && cursor <= linkEnd) {
+                            break;
+                        } else {
+                            linkStart = null;
+                            linkEnd = null;
+                        }
+                    }
+                }
+                if (linkStart != null) {
+                    linkUnderCursor = text.substring(linkStart + 1, linkEnd);
+                }
+                var isLinkEnter = (e.type == 'click' || e.keyCode == 13);
+                if (isLinkEnter && linkUnderCursor) { // return
+                    e.preventDefault();
+                    enterPage(linkUnderCursor);
+                }
+            }
+
+            function setDefaultContent() {
+                pages = {
+                    'Home': 'Edit me!\n\nCreate links like this: (Banana)\n\nClick # for help.',
+                }
+            }
+
+            function deleteAll() {
+                var response = window.confirm("This will delete all of your data. Are you sure?");
+                if (response) {
+                    setDefaultContent();
+                    enterPage('Home');
+                    save();
+                }
+            }
+
+            function exportPages() {
+                enterPage(SYSTEM_EXPORT_PAGE);
+            }
+        })();
     </script>
 </body>
 <html>
