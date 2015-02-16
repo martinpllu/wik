@@ -52,7 +52,7 @@
     <div class="settings">
         <div><a href="#System:Export">Import/Export</a>
         </div>
-        <div><a href="javascript:reset()">Reset</a>
+        <div><a href="javascript:deleteAll()">Delete all</a>
         </div>
     </div>
     <script>
@@ -167,10 +167,13 @@
             }
         }
 
-        function reset() {
-            setDefaultContent();
-            enterPage('Home');
-            save();
+        function deleteAll() {
+            var response = window.confirm("This will delete all of your data. Are you sure?");
+            if (response){
+                setDefaultContent();
+                enterPage('Home');
+                save();
+            }
         }
         
         function exportPages(){
