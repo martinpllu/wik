@@ -19,14 +19,13 @@
             -moz-box-shadow: none;
             box-shadow: none;
         }
-            
+        
         .title-bar {
             margin-bottom: 20px;
             font-size: 30px;
         }
         
         #title {
-            
             color: #F00;
         }
         
@@ -46,26 +45,20 @@
 
 <body>
     <div class="title-bar">
-        <a id="back" class="button" href="javascript:history.back()"><</a>
-            <a id="settings" class="button" href="javascript:history.back()">#</a>
-        <span id="title"></span>
+        <a id="back" class="button" href="javascript:history.back()">
+            <</a>
+                <a id="settings" class="button" href="#System:Actions">#</a>
+                <span id="title"></span>
     </div>
     <textarea id="editor" style="width:100%" rows="20" spellcheck="false">
     </textarea>
-    <div class="settings">
-        <div><a href="#System:Export">Import/Export</a>
-        </div>
-        <div><a href="javascript:deleteAll()">Delete all</a>
-        </div>
-    </div>
+    
     <script>
         var DATA_KEY = 'wik.data';
         var SYSTEM_EXPORT_PAGE = 'System:Export';
-        var DEFAULT_CONTENT = "Welcome to wik!\n\n" + //
-            "Go ahead and edit this page.\n\n" + //
-            "Changes are automatically saved.\n\n" + //
-            "Brackets create links, e.g. (Banana)\n\n" + //
-            "Click or press return inside a link to open it.\n"
+        var SYSTEM_DELETE_ALL_PAGE = 'System:DeleteAll';
+        var SYSTEM_ACTIONS_PAGE = 'System:Actions';
+        var SYSTEM_HELP_PAGE = 'System:Help';
 
         var page;
         var pages;
@@ -86,20 +79,34 @@
         }
 
         function enterPage(pageName) {
-            page = pageName;            
+            if (pageName == SYSTEM_DELETE_ALL_PAGE){
+                deleteAll();
+                return;
+            }
+            page = pageName;
             window.location.hash = pageName;
             editor.value = pageText();
             document.getElementById('title').innerHTML = page;
             editor.blur();
         }
-        
-        function pageText(){
-            if (page == SYSTEM_EXPORT_PAGE){
+
+        function pageText() {
+            if (page == SYSTEM_EXPORT_PAGE) {
                 return JSON.stringify(pages, undefined, 4);
+            } 
+            if (page == SYSTEM_ACTIONS_PAGE){
+                return '(System:Help)\n\n(System:Export)\n\n(System:DeleteAll)'
             }
+            if (page == SYSTEM_HELP_PAGE){
+                return "Welcome to wik!\n\n" + //
+                    "Click on a page and start typing to edit text.\n\n" + //
+                    "Changes are automatically saved.\n\n" + //
+                    "Brackets create links, e.g. (Banana)\n\n" + //
+                    "Click or press return inside a link to open it.\n"
+            }   
             else {
                 var data = pages[page];
-                if (data == undefined){
+                if (data == undefined) {
                     data = '';
                 }
                 return data;
@@ -112,10 +119,9 @@
         }
 
         function save() {
-            if (page == SYSTEM_EXPORT_PAGE){
+            if (page == SYSTEM_EXPORT_PAGE) {
                 pages = JSON.parse(editor.value);
-            }
-            else {
+            } else {
                 pages[page] = editor.value;
             }
             localStorage.setItem(DATA_KEY, JSON.stringify(pages));
@@ -125,12 +131,12 @@
         editor.onkeyup = edit;
         editor.onclick = navigate;
 
-        function edit(){
+        function edit() {
             save();
         }
-        
+
         function navigate(e) {
-            if (page == SYSTEM_EXPORT_PAGE){
+            if (page == SYSTEM_EXPORT_PAGE) {
                 return;
             }
             var linkUnderCursor = null;
@@ -166,25 +172,22 @@
 
         function setDefaultContent() {
             pages = {
-                "Home": DEFAULT_CONTENT
+                'Home': 'Edit me!\n\nCreate links like this: (Banana)\n\nClick # for help.',
             }
         }
 
         function deleteAll() {
             var response = window.confirm("This will delete all of your data. Are you sure?");
-            if (response){
+            if (response) {
                 setDefaultContent();
                 enterPage('Home');
                 save();
             }
         }
-        
-        function exportPages(){
+
+        function exportPages() {
             enterPage(SYSTEM_EXPORT_PAGE);
         }
-        
-            
-        
     </script>
 </body>
 <html>
