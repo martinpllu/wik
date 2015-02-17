@@ -1,3 +1,2 @@
-- Save pages separately
 - github hosting
-- Cope with parsing failure
+- Namespaces? Could use url path.

@@ -18,6 +18,7 @@
             -webkit-box-shadow: none;
             -moz-box-shadow: none;
             box-shadow: none;
+            width: 100%;
         }
         
         .title-bar {
@@ -49,18 +50,23 @@
         <a id="settings" class="button" href="#AllContent">#</a>
         <span id="title"></span>
     </div>
-    <textarea id="editor" style="width:100%" rows="20" spellcheck="false">
+    <textarea id="editor" rows="20" spellcheck="false">
     </textarea>
 
     <script>
         (function () {
+
             var DATA_KEY = 'wik.data';
+
             // See http://daringfireball.net/2010/07/improved_regex_for_matching_urls
             var URL_REGEXP = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
-            
-            var page;
-            var pages;
-            editor = document.getElementById('editor');
+
+            var INITIAL_CONTENT = {
+                'Home': 'Edit me!\n\nCreate links like this: (Banana) or (http://example.com)\n\nClick or press return inside links to navigate.\n\nClick # to edit/grab/search all content.',
+            }
+
+            var currentPage, allPages;
+            var editor = document.getElementById('editor');
 
             document.addEventListener("DOMContentLoaded", function (event) {
                 load();
@@ -70,50 +76,38 @@
             function load() {
                 var rawData = localStorage.getItem(DATA_KEY);
                 if (!rawData) {
-                    createInitialContent();
+                    allPages = INITIAL_CONTENT;
                 } else {
-                    pages = JSON.parse(rawData);
+                    allPages = JSON.parse(rawData);
                 }
             }
 
             function enterPage(pageName) {
-                page = pageName;
+                currentPage = pageName;
                 window.location.hash = pageName;
-                editor.value = pageText();
-                document.getElementById('title').innerHTML = page;
+                editor.value = pageContent();
+                document.getElementById('title').innerHTML = currentPage;
                 editor.blur();
             }
 
-            function pageText() {
-                if (page == 'AllContent') {
-                    return JSON.stringify(pages, undefined, 4);
+            function pageContent() {
+                if (currentPage == 'AllContent') {
+                    return JSON.stringify(allPages, undefined, 4);
                 } else {
-                    var data = pages[page];
-                    if (data == undefined) {
-                        data = '';
-                    }
+                    var data = allPages[currentPage] || '';
                     return data;
                 }
             }
 
-            window.onhashchange = function () {
-                var pageName = window.location.hash.substring(1);
-                enterPage(pageName);
-            }
-
             function save() {
-                if (page == 'AllContent') {
-                    pages = JSON.parse(editor.value);
+                if (currentPage == 'AllContent') {
+                    allPages = JSON.parse(editor.value);
                 } else {
-                    pages[page] = editor.value;
+                    allPages[currentPage] = editor.value;
                 }
-                localStorage.setItem(DATA_KEY, JSON.stringify(pages));
+                localStorage.setItem(DATA_KEY, JSON.stringify(allPages));
             }
-
-            editor.onkeyup = save;
-            editor.onkeydown = followLink;
-            editor.onclick = followLink;
-
+            
             function followLink(e) {
                 var linkUnderCursor = null;
                 var text = editor.value;
@@ -140,21 +134,23 @@
                     linkUnderCursor = text.substring(linkStart + 1, linkEnd);
                 }
                 var isLinkEnter = (e.type == 'click' || e.keyCode == 13);
-                if (isLinkEnter && linkUnderCursor) { 
+                if (isLinkEnter && linkUnderCursor) {
                     e.preventDefault();
-                    if (linkUnderCursor.match(URL_REGEXP)){
-                        window.location = linkUnderCursor;   
-                    }
-                    else {
+                    if (linkUnderCursor.match(URL_REGEXP)) {
+                        window.location = linkUnderCursor;
+                    } else {
                         enterPage(linkUnderCursor);
                     }
                 }
             }
+            
+            editor.onkeyup = save;
+            editor.onkeydown = followLink;
+            editor.onclick = followLink;
 
-            function createInitialContent() {
-                pages = {
-                    'Home': 'Edit me!\n\nCreate links like this: (Banana) or (http://example.com)\n\nClick or press return inside links to navigate.\n\nClick # to edit/grab/search all content.',
-                }
+            window.onhashchange = function () {
+                var pageName = window.location.hash.substring(1);
+                enterPage(pageName);
             }
 
         })();
