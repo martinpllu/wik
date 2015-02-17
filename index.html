@@ -47,7 +47,7 @@
     <div class="title-bar">
         <a id="back" class="button" href="javascript:history.back()">
             <</a>
-                <a id="settings" class="button" href="#System:Actions">#</a>
+                <a id="settings" class="button" href="#AllContent">#</a>
                 <span id="title"></span>
     </div>
     <textarea id="editor" style="width:100%" rows="20" spellcheck="false">
@@ -56,11 +56,7 @@
     <script>
         (function () {
             var DATA_KEY = 'wik.data';
-            var SYSTEM_EXPORT_PAGE = 'System:Export';
-            var SYSTEM_DELETE_ALL_PAGE = 'System:DeleteAll';
-            var SYSTEM_ACTIONS_PAGE = 'System:Actions';
-            var SYSTEM_HELP_PAGE = 'System:Help';
-
+            var SYSTEM_EXPORT_PAGE = 'AllContent';
             var page;
             var pages;
             editor = document.getElementById('editor');
@@ -73,17 +69,14 @@
             function load() {
                 var rawData = localStorage.getItem(DATA_KEY);
                 if (!rawData) {
-                    setDefaultContent();
+                    createInitialContent();
                 } else {
                     pages = JSON.parse(rawData);
                 }
             }
 
             function enterPage(pageName) {
-                if (pageName == SYSTEM_DELETE_ALL_PAGE) {
-                    deleteAll();
-                    return;
-                }
+
                 page = pageName;
                 window.location.hash = pageName;
                 editor.value = pageText();
@@ -95,16 +88,7 @@
                 if (page == SYSTEM_EXPORT_PAGE) {
                     return JSON.stringify(pages, undefined, 4);
                 }
-                if (page == SYSTEM_ACTIONS_PAGE) {
-                    return '(Home)\ngo home\n\n(System:Help)\nget some help\n\n(System:Export)\ngrab or edit the content of the entire wiki\n\n(System:DeleteAll)\nnuke it all'
-                }
-                if (page == SYSTEM_HELP_PAGE) {
-                    return "Welcome to wik!\n\n" + //
-                        "Click on a page and start typing to edit text.\n\n" + //
-                        "Changes are automatically saved.\n\n" + //
-                        "Brackets create links, e.g. (Banana)\n\n" + //
-                        "Click or press return inside a link to open it.\n"
-                } else {
+                else {
                     var data = pages[page];
                     if (data == undefined) {
                         data = '';
@@ -128,17 +112,10 @@
             }
 
             editor.onkeydown = navigate;
-            editor.onkeyup = edit;
+            editor.onkeyup = save;
             editor.onclick = navigate;
 
-            function edit() {
-                save();
-            }
-
             function navigate(e) {
-                if (page == SYSTEM_EXPORT_PAGE) {
-                    return;
-                }
                 var linkUnderCursor = null;
                 var text = editor.value;
                 var cursor = editor.selectionStart;
@@ -170,24 +147,12 @@
                 }
             }
 
-            function setDefaultContent() {
+            function createInitialContent() {
                 pages = {
-                    'Home': 'Edit me!\n\nCreate links like this: (Banana)\n\nClick # for help.',
+                    'Home': 'Edit me!\n\nCreate links like this: (Banana)\n\nClick # to grab/edit all content',
                 }
             }
 
-            function deleteAll() {
-                var response = window.confirm("This will delete all of your data. Are you sure?");
-                if (response) {
-                    setDefaultContent();
-                    enterPage('Home');
-                    save();
-                }
-            }
-
-            function exportPages() {
-                enterPage(SYSTEM_EXPORT_PAGE);
-            }
         })();
     </script>
 </body>
