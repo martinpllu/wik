@@ -11,4 +11,7 @@ Aims:
 * Allow decent keyboard navigation.
 * Work offline (once you've loaded the URL below you can use wik even without an internet connection).
 
+To use/install, bookmark the following link:
+
+<a href="https://cdn.rawgit.com/martinpllu/wik/master/index.html">wik</a>
 

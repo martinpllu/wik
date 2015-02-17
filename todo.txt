@@ -1,2 +1,1 @@
-- github hosting
 - Namespaces? Could use url path.
