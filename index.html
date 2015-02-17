@@ -45,10 +45,9 @@
 
 <body>
     <div class="title-bar">
-        <a id="back" class="button" href="javascript:history.back()">
-            <</a>
-                <a id="settings" class="button" href="#AllContent">#</a>
-                <span id="title"></span>
+        <a id="back" class="button" href="javascript:history.back()">&lt;</a>
+        <a id="settings" class="button" href="#AllContent">#</a>
+        <span id="title"></span>
     </div>
     <textarea id="editor" style="width:100%" rows="20" spellcheck="false">
     </textarea>
@@ -56,7 +55,9 @@
     <script>
         (function () {
             var DATA_KEY = 'wik.data';
-            var SYSTEM_EXPORT_PAGE = 'AllContent';
+            // See http://daringfireball.net/2010/07/improved_regex_for_matching_urls
+            var URL_REGEXP = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
+            
             var page;
             var pages;
             editor = document.getElementById('editor');
@@ -76,7 +77,6 @@
             }
 
             function enterPage(pageName) {
-
                 page = pageName;
                 window.location.hash = pageName;
                 editor.value = pageText();
@@ -85,10 +85,9 @@
             }
 
             function pageText() {
-                if (page == SYSTEM_EXPORT_PAGE) {
+                if (page == 'AllContent') {
                     return JSON.stringify(pages, undefined, 4);
-                }
-                else {
+                } else {
                     var data = pages[page];
                     if (data == undefined) {
                         data = '';
@@ -103,7 +102,7 @@
             }
 
             function save() {
-                if (page == SYSTEM_EXPORT_PAGE) {
+                if (page == 'AllContent') {
                     pages = JSON.parse(editor.value);
                 } else {
                     pages[page] = editor.value;
@@ -111,11 +110,11 @@
                 localStorage.setItem(DATA_KEY, JSON.stringify(pages));
             }
 
-            editor.onkeydown = navigate;
             editor.onkeyup = save;
-            editor.onclick = navigate;
+            editor.onkeydown = followLink;
+            editor.onclick = followLink;
 
-            function navigate(e) {
+            function followLink(e) {
                 var linkUnderCursor = null;
                 var text = editor.value;
                 var cursor = editor.selectionStart;
@@ -141,15 +140,20 @@
                     linkUnderCursor = text.substring(linkStart + 1, linkEnd);
                 }
                 var isLinkEnter = (e.type == 'click' || e.keyCode == 13);
-                if (isLinkEnter && linkUnderCursor) { // return
+                if (isLinkEnter && linkUnderCursor) { 
                     e.preventDefault();
-                    enterPage(linkUnderCursor);
+                    if (linkUnderCursor.match(URL_REGEXP)){
+                        window.location = linkUnderCursor;   
+                    }
+                    else {
+                        enterPage(linkUnderCursor);
+                    }
                 }
             }
 
             function createInitialContent() {
                 pages = {
-                    'Home': 'Edit me!\n\nCreate links like this: (Banana)\n\nClick # to grab/edit all content',
+                    'Home': 'Edit me!\n\nCreate links like this (Banana) or (http://example.com).\n\nClick or press return inside links to navigate.\n\nClick # to edit/grab all content.',
                 }
             }
 

@@ -1,5 +1,3 @@
-- Brackets in page names
 - Save pages separately
 - github hosting
-- URL links
 - Cope with parsing failure
