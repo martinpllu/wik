@@ -2,16 +2,16 @@
 
 A ridiculously simple personal wiki.
 
+Bookmark <a href="https://cdn.rawgit.com/martinpllu/wik/master/index.html">wik</a>
+
 Aims:
 
+* Be really, really simple (~160 lines of HTML/JS/CSS!)
 * Make edit and navigation as fluid as possible.
 * Work on mobile as well as desktop.
 * Store all data locally on device.
-* Be really, really simple (~160 lines of HTML/JS/CSS!)
 * Allow decent keyboard navigation.
-* Work offline (once you've loaded the URL below you can use wik even without an internet connection).
+* Work offline.
 
-To use/install, bookmark the following link:
 
-<a href="https://cdn.rawgit.com/martinpllu/wik/master/index.html">wik</a>
 

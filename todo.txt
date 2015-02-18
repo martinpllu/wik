@@ -1,1 +1,2 @@
+- Icons look rubbish on FF
 - Namespaces? Could use url path.
