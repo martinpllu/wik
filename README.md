@@ -6,11 +6,11 @@ Bookmark <a href="https://cdn.rawgit.com/martinpllu/wik/master/index.html">wik</
 
 Aims:
 
-* Be really, really simple (~160 lines of HTML/JS/CSS!)
+* Be really, really simple (1 file, ~5K unzipped!)
 * Make edit and navigation as fluid as possible.
-* Work on mobile as well as desktop.
+* Work well on mobile as well as desktop.
 * Store all data locally on device.
-* Allow decent keyboard navigation.
+* Decent keyboard navigation.
 * Work offline.
 
 
