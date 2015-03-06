@@ -4,7 +4,7 @@
 
 Implemented in a single 160-line HTML file. Done for fun but might be of some interest, who knows.
 
-Install by bookmarking <a href="https://cdn.rawgit.com/martinpllu/wik/master/index.html">wik</a> (it keeps working when you're offline).
+Install by bookmarking <a href="https://cdn.rawgit.com/martinpllu/wik/3c96ca75e46e84a30fbf9c1ea5cad24072e52a16/index.html#Home">wik</a> (it keeps working when you're offline).
 
 Aims:
 
