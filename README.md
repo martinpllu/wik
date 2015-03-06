@@ -10,7 +10,8 @@ Aims:
 
 * Be really, really simple.
 * Make edit and navigation as fluid as possible.
-* Work well on mobile as well as desktop.
+* Work equally well on mobile and desktop.
+* Support browser navigation (back/forward/bookmark etc)
 * Store all data locally on device.
 * Decent keyboard navigation.
 * Work offline.
