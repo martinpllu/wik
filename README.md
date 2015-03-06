@@ -9,7 +9,7 @@ Install by bookmarking <a href="https://cdn.rawgit.com/martinpllu/wik/3c96ca75e4
 Aims:
 
 * Be really, really simple.
-* Make edit and navigation as fluid as possible.
+* No separate 'edit mode' like most wikis. Pages are directly editable.
 * Work equally well on mobile and desktop.
 * Support browser navigation (back/forward/bookmark etc)
 * Store all data locally on device.
