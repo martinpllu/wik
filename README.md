@@ -1,12 +1,14 @@
 # wik
 
-A ridiculously simple personal wiki.
+*A ridiculously simple personal wiki.*
+
+Implemented in a single 160-line HTML file. Done for fun but might be of some interest, who knows.
 
 Install by bookmarking <a href="https://cdn.rawgit.com/martinpllu/wik/master/index.html">wik</a> (it keeps working when you're offline).
 
 Aims:
 
-* Be really, really simple (1 file, ~5K unzipped!).
+* Be really, really simple.
 * Make edit and navigation as fluid as possible.
 * Work well on mobile as well as desktop.
 * Store all data locally on device.
