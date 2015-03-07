@@ -11,6 +11,7 @@ Bookmark it - it will keep working when you're offline.
 Aims:
 
 * Be really, really simple.
+* Save all data in browser localstorage
 * No separate 'edit mode' like most wikis. Pages are directly editable.
 * Work equally well on mobile and desktop.
 * Support browser navigation (back/forward/bookmark etc)
