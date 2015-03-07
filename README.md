@@ -2,9 +2,9 @@
 
 *A ridiculously simple personal wiki.*
 
-Implemented in a single 160-line HTML file. Done for fun but might be of some interest, who knows.
+Implemented in a single 160-line HTML file.
 
-Install by bookmarking <a href="https://cdn.rawgit.com/martinpllu/wik/3c96ca75e46e84a30fbf9c1ea5cad24072e52a16/index.html#Home">wik</a> (it keeps working when you're offline).
+Try it now: <a href="https://cdn.rawgit.com/martinpllu/wik/5fc3f51ab5d8686cbc50c6575565cc43762a8ec8/index.html#Home">wik</a> (bookmark it; it keeps working when you're offline).
 
 Aims:
 
