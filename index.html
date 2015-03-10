@@ -131,7 +131,7 @@
                         }
                     }
                 }
-                if (linkStart != null) {
+                if (linkStart != null && linkEnd != null) {
                     linkUnderCursor = text.substring(linkStart + 1, linkEnd);
                 }
                 var isLinkEnter = (e.type == 'click' || e.keyCode == 13);
