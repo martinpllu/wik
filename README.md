@@ -4,7 +4,7 @@
 
 Implemented in a single 160-line HTML file.
 
-Try it now: <a href="https://cdn.rawgit.com/martinpllu/wik/afb3a7085750130a24c102963644e61e93d2ff73/index.html#Home">wik</a>
+Try it now: <a href="http://wik.netlify.com">wik.netlify.com</a>
 
 Bookmark it - it will keep working when you're offline.
 
